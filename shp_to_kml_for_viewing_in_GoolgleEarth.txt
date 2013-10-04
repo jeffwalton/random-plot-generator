@@ -1,0 +1,23 @@
+#
+# This is the command to generate a kml file from the point or polygon shapeFile.
+# The kml can then be viewed in Google Earth.
+#
+#
+# This command is from the open source OGR library http://www.gdal.org/ogr/
+# OGR utility programs are available on Debian-based Linux distributions
+#   through the 'gdal-bin' package.
+# On Windows, use the FWTools kit (http://fwtools.maptools.org/), which will
+#   install the OGR utility programs. Run this command in the 'FWTools Shell'.
+#
+# Execute at the FWTools (or Linux) command line:  
+
+ogr2ogr -f "KML" output.kml input.shp -dsco NameField=Id -t_srs "EPSG:4326"
+
+# 
+# input.shp is your point or polygon shapeFile
+# output.kml is the resulting kml file to be displayed in GE
+# -dsco NameField=Id will set the displayed name label to the Id number of the plot
+# -t_srs "EPSG:4326" reprojects the output into the WGS84 Geographic system used by GE
+#
+# more options for ogr2ogr can be found at: http://www.gdal.org/ogr/ogr2ogr.html
+# specifics about the KML format are at: http://www.gdal.org/ogr/drv_kml.html

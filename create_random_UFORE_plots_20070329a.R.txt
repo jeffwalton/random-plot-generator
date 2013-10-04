@@ -1,0 +1,59 @@
+# This is a script to generate random sample plot locations for the UFORE model.
+
+# To use this script you must have R installed on your computer.
+#   You can download R from the main project website http://r-project.org by:
+#   1) clicking on the CRAN link under download, 
+#   2) selecting a mirror geographically near you,
+#   3) selecting the operating system of your computer,
+#   4) following the link for the 'base' package, and 
+#   5) selecting 'Setup Program' and save onto your computer.
+#   Execute the setup program on your computer to install.
+
+#   Two packages must be installed: 'sp' and 'maptools'.
+#   To install packages (on Windows),
+#               1) From the menu bar, select 'Packages | Install Package(s)...', 
+#               2) select a nearby mirror, and
+#               3) select the 'maptools' and 'sp' packages.
+
+# A GIS shapefile of your project boundary is also required.
+
+
+# NOTE: Use the forward slash '/' in the file names.
+# modify ONLY the following THREE lines:
+boundaryFileName = "C:/JeffW/myUFOREproject/syrbnd_utm18.shp"          # the shapefile for your project boundary
+randomPointsFileName = "C:/JeffW/myUFOREproject/UFORE_samplePoints"    # the output shapefile for the random points. NOTE: leave off the .shp extension.
+numberOfPlots = 200                                                    # the approximate number of UFORE plots to create
+
+# DO NOT MODIFY BELOW THIS LINE
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+library(sp)
+library(maptools)
+
+getinfo.shape(boundaryFileName)
+
+boundaryPolygon <- readShapePoly(boundaryFileName)
+
+# This should give the area of the boundary polygon if it consists of one polygon.
+boundaryPolygon@polygons[[1]]@area
+
+# make a plot of the project boundary
+plot(boundaryPolygon, border="blue", axes=TRUE, las=1)
+
+# generate random points
+randomSamplePoints <- spsample( boundaryPolygon, n=numberOfPlots, type="stratified")
+# the "stratified" type is BD Ripley's notation and generates "randomized grid" points in UFORE jargon
+
+# add the points to the plot
+points( randomSamplePoints, pch=1, cex=.5)
+
+# print summary information about the points
+summary(randomSamplePoints)
+# print the structure of the point data.frame
+str(randomSamplePoints)
+
+# print the sample points to the screen
+print(randomSamplePoints)
+
+# write out points to a shapefile
+writePointsShape( randomSamplePoints, randomPointsFileName)
+getinfo.shape(randomPointsFileName)
